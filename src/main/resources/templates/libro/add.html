@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{libro.add.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{libro.add.headline}]]</h1>
+                <div>
+                    <a th:href="@{/libros}" class="btn btn-secondary">[[#{libro.add.back}]]</a>
+                </div>
+            </div>
+            <div th:replace="~{fragments/forms::globalErrors('libro')}" />
+            <form th:action="${requestUri}" method="post">
+                <div th:replace="~{fragments/forms::inputRow(object='libro', field='nombre')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='libro', field='autor')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='libro', field='genero')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='libro', field='numTotal', type='number')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='libro', field='numDisponible', type='number')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='libro', field='disponibilidad', type='checkbox')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='libro', field='estado', type='radio')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='libro', field='libro', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='libro', field='libroReparador', type='select')}" />
+                <input type="submit" th:value="#{libro.add.headline}" class="btn btn-primary mt-4" />
+            </form>
+        </div>
+    </body>
+</html>

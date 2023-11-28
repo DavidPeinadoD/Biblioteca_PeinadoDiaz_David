@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{lector.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{lector.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/lectors/add}" class="btn btn-primary ms-2">[[#{lector.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${lectors.empty}">[[#{lector.list.empty}]]</div>
+            <div th:if="${!lectors.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{lector.id.label}]]</th>
+                            <th scope="col">[[#{lector.nombre.label}]]</th>
+                            <th scope="col">[[#{lector.apellidos.label}]]</th>
+                            <th scope="col">[[#{lector.libro.label}]]</th>
+                            <th scope="col">[[#{lector.usuarioLector.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="lector : ${lectors}">
+                            <td>[[${lector.id}]]</td>
+                            <td>[[${lector.nombre}]]</td>
+                            <td>[[${lector.apellidos}]]</td>
+                            <td>[[${lector.libro}]]</td>
+                            <td>[[${lector.usuarioLector}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/lectors/edit/{id}(id=${lector.id})}" class="btn btn-sm btn-secondary">[[#{lector.list.edit}]]</a>
+                                    <form th:action="@{/lectors/delete/{id}(id=${lector.id})}"
+                                            th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{lector.list.delete}]]</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

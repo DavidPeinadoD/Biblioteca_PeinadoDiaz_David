@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{prestamo.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{prestamo.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/prestamos/add}" class="btn btn-primary ms-2">[[#{prestamo.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${prestamoes.empty}">[[#{prestamo.list.empty}]]</div>
+            <div th:if="${!prestamoes.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{prestamo.id.label}]]</th>
+                            <th scope="col">[[#{prestamo.nombre.label}]]</th>
+                            <th scope="col">[[#{prestamo.fechaPrestamo.label}]]</th>
+                            <th scope="col">[[#{prestamo.fechaDevolucion.label}]]</th>
+                            <th scope="col">[[#{prestamo.prestamo.label}]]</th>
+                            <th scope="col">[[#{prestamo.prestamoLibro.label}]]</th>
+                            <th scope="col">[[#{prestamo.prestamoBibliotecario.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="prestamo : ${prestamoes}">
+                            <td>[[${prestamo.id}]]</td>
+                            <td>[[${prestamo.nombre}]]</td>
+                            <td>[[${prestamo.fechaPrestamo}]]</td>
+                            <td>[[${prestamo.fechaDevolucion}]]</td>
+                            <td>[[${prestamo.prestamo}]]</td>
+                            <td>[[${prestamo.prestamoLibro}]]</td>
+                            <td>[[${prestamo.prestamoBibliotecario}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/prestamos/edit/{id}(id=${prestamo.id})}" class="btn btn-sm btn-secondary">[[#{prestamo.list.edit}]]</a>
+                                    <form th:action="@{/prestamos/delete/{id}(id=${prestamo.id})}"
+                                            th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{prestamo.list.delete}]]</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

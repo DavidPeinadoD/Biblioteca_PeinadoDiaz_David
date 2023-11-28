@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{prestamo.add.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{prestamo.add.headline}]]</h1>
+                <div>
+                    <a th:href="@{/prestamos}" class="btn btn-secondary">[[#{prestamo.add.back}]]</a>
+                </div>
+            </div>
+            <div th:replace="~{fragments/forms::globalErrors('prestamo')}" />
+            <form th:action="${requestUri}" method="post">
+                <div th:replace="~{fragments/forms::inputRow(object='prestamo', field='nombre')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='prestamo', field='fechaPrestamo', inputClass='js-datepicker')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='prestamo', field='fechaDevolucion', inputClass='js-datepicker')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='prestamo', field='prestamo', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='prestamo', field='prestamoLibro', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='prestamo', field='prestamoBibliotecario', type='select')}" />
+                <input type="submit" th:value="#{prestamo.add.headline}" class="btn btn-primary mt-4" />
+            </form>
+        </div>
+    </body>
+</html>

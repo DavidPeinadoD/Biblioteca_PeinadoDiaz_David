@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{lector.add.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{lector.add.headline}]]</h1>
+                <div>
+                    <a th:href="@{/lectors}" class="btn btn-secondary">[[#{lector.add.back}]]</a>
+                </div>
+            </div>
+            <div th:replace="~{fragments/forms::globalErrors('lector')}" />
+            <form th:action="${requestUri}" method="post">
+                <div th:replace="~{fragments/forms::inputRow(object='lector', field='nombre')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='lector', field='apellidos')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='lector', field='libro')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='lector', field='usuarioLector', type='select')}" />
+                <input type="submit" th:value="#{lector.add.headline}" class="btn btn-primary mt-4" />
+            </form>
+        </div>
+    </body>
+</html>
