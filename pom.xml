@@ -9,7 +9,7 @@
         <relativePath /><!-- lookup parent from repository -->
     </parent>
     <groupId>io.bootify</groupId>
-    <artifactId>my-app</artifactId>
+    <artifactId>Biblioteca_PeinadoDiaz_David</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>my-app</name>
 
