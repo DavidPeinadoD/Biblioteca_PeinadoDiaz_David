@@ -50,15 +50,15 @@ public class Prestamo {
     @Column(nullable = false)
     private LocalDate fechaDevolucion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "prestamo_id")
+    @ManyToOne(fetch = FetchType.EAGER) // Cambiado a EAGER
+    @JoinColumn(name = "prestamo_id", nullable = false)
     private Libro prestamo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) // Cambiado a EAGER
     @JoinColumn(name = "prestamo_libro_id")
     private Lector prestamoLibro;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) // Cambiado a EAGER
     @JoinColumn(name = "prestamo_bibliotecario_id")
     private Bibliotecario prestamoBibliotecario;
 

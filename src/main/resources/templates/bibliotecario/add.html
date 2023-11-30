@@ -16,7 +16,6 @@
             <form th:action="${requestUri}" method="post">
                 <div th:replace="~{fragments/forms::inputRow(object='bibliotecario', field='nombre')}" />
                 <div th:replace="~{fragments/forms::inputRow(object='bibliotecario', field='apellidos')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='bibliotecario', field='parteManeja')}" />
                 <div th:replace="~{fragments/forms::inputRow(object='bibliotecario', field='bibliotecario', type='select')}" />
                 <div th:replace="~{fragments/forms::inputRow(object='bibliotecario', field='usuarioBibliotecario', type='select')}" />
                 <input type="submit" th:value="#{bibliotecario.add.headline}" class="btn btn-primary mt-4" />

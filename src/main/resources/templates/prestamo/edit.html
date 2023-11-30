@@ -19,7 +19,6 @@
                 <div th:replace="~{fragments/forms::inputRow(object='prestamo', field='fechaPrestamo', inputClass='js-datepicker')}" />
                 <div th:replace="~{fragments/forms::inputRow(object='prestamo', field='fechaDevolucion', inputClass='js-datepicker')}" />
                 <div th:replace="~{fragments/forms::inputRow(object='prestamo', field='prestamo', type='select')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='prestamo', field='prestamoLibro', type='select')}" />
                 <div th:replace="~{fragments/forms::inputRow(object='prestamo', field='prestamoBibliotecario', type='select')}" />
                 <input type="submit" th:value="#{prestamo.edit.headline}" class="btn btn-primary mt-4" />
             </form>

@@ -40,10 +40,10 @@ public class Lector {
     )
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String nombre;
 
-    @Column
+    @Column(nullable = false)
     private String apellidos;
 
     @Column

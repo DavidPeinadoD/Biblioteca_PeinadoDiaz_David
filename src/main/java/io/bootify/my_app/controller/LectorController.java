@@ -27,7 +27,7 @@ public class LectorController {
     private final UsuarioRepository usuarioRepository;
 
     public LectorController(final LectorService lectorService,
-            final UsuarioRepository usuarioRepository) {
+                            final UsuarioRepository usuarioRepository) {
         this.lectorService = lectorService;
         this.usuarioRepository = usuarioRepository;
     }
@@ -52,13 +52,18 @@ public class LectorController {
 
     @PostMapping("/add")
     public String add(@ModelAttribute("lector") @Valid final LectorDTO lectorDTO,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+                      final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "lector/add";
+        }try{
+            lectorService.create(lectorDTO);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("lector.create.success"));
+            return "redirect:/lectors";
+        }catch (IllegalArgumentException e){
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, e.getMessage());
+            return "redirect:/lectors/add";
         }
-        lectorService.create(lectorDTO);
-        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("lector.create.success"));
-        return "redirect:/lectors";
+
     }
 
     @GetMapping("/edit/{id}")
@@ -69,19 +74,24 @@ public class LectorController {
 
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable(name = "id") final Long id,
-            @ModelAttribute("lector") @Valid final LectorDTO lectorDTO,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+                       @ModelAttribute("lector") @Valid final LectorDTO lectorDTO,
+                       final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "lector/edit";
+        }try{
+            lectorService.update(id, lectorDTO);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("lector.update.success"));
+            return "redirect:/lectors";
+        }catch (IllegalArgumentException e){
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, e.getMessage());
+            return "redirect:/lectors/edit/{id}";
         }
-        lectorService.update(id, lectorDTO);
-        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("lector.update.success"));
-        return "redirect:/lectors";
+
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable(name = "id") final Long id,
-            final RedirectAttributes redirectAttributes) {
+                         final RedirectAttributes redirectAttributes) {
         final String referencedWarning = lectorService.getReferencedWarning(id);
         if (referencedWarning != null) {
             redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, referencedWarning);

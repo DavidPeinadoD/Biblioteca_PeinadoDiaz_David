@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static org.apache.commons.lang3.Streams.stream;
+
 
 @Controller
 @RequestMapping("/prestamos")
@@ -33,8 +35,8 @@ public class PrestamoController {
     private final BibliotecarioRepository bibliotecarioRepository;
 
     public PrestamoController(final PrestamoService prestamoService,
-            final LibroRepository libroRepository, final LectorRepository lectorRepository,
-            final BibliotecarioRepository bibliotecarioRepository) {
+                              final LibroRepository libroRepository, final LectorRepository lectorRepository,
+                              final BibliotecarioRepository bibliotecarioRepository) {
         this.prestamoService = prestamoService;
         this.libroRepository = libroRepository;
         this.lectorRepository = lectorRepository;
@@ -46,12 +48,7 @@ public class PrestamoController {
         model.addAttribute("prestamoValues", libroRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Libro::getId, Libro::getNombre)));
-        model.addAttribute("prestamoLibroValues", lectorRepository.findAll(Sort.by("id"))
-                .stream()
-                .collect(CustomCollectors.toSortedMap(Lector::getId, Lector::getNombre)));
-        model.addAttribute("prestamoBibliotecarioValues", bibliotecarioRepository.findAll(Sort.by("id"))
-                .stream()
-                .collect(CustomCollectors.toSortedMap(Bibliotecario::getId, Bibliotecario::getNombre)));
+
     }
 
     @GetMapping
@@ -67,7 +64,7 @@ public class PrestamoController {
 
     @PostMapping("/add")
     public String add(@ModelAttribute("prestamo") @Valid final PrestamoDTO prestamoDTO,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+                      final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "prestamo/add";
         }
@@ -84,8 +81,8 @@ public class PrestamoController {
 
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable(name = "id") final Long id,
-            @ModelAttribute("prestamo") @Valid final PrestamoDTO prestamoDTO,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+                       @ModelAttribute("prestamo") @Valid final PrestamoDTO prestamoDTO,
+                       final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "prestamo/edit";
         }
@@ -96,7 +93,7 @@ public class PrestamoController {
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable(name = "id") final Long id,
-            final RedirectAttributes redirectAttributes) {
+                         final RedirectAttributes redirectAttributes) {
         prestamoService.delete(id);
         redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("prestamo.delete.success"));
         return "redirect:/prestamos";

@@ -25,8 +25,8 @@ public class LibroService {
     private final PrestamoRepository prestamoRepository;
 
     public LibroService(final LibroRepository libroRepository,
-            final LectorRepository lectorRepository, final ReparadorRepository reparadorRepository,
-            final PrestamoRepository prestamoRepository) {
+                        final LectorRepository lectorRepository, final ReparadorRepository reparadorRepository,
+                        final PrestamoRepository prestamoRepository) {
         this.libroRepository = libroRepository;
         this.lectorRepository = lectorRepository;
         this.reparadorRepository = reparadorRepository;
@@ -47,12 +47,16 @@ public class LibroService {
     }
 
     public Long create(final LibroDTO libroDTO) {
+        validateNonNullFields(libroDTO);
+
         final Libro libro = new Libro();
         mapToEntity(libroDTO, libro);
         return libroRepository.save(libro).getId();
     }
 
     public void update(final Long id, final LibroDTO libroDTO) {
+        validateNonNullFields(libroDTO);
+
         final Libro libro = libroRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(libroDTO, libro);
@@ -102,6 +106,17 @@ public class LibroService {
             return WebUtils.getMessage("libro.prestamo.prestamo.referenced", prestamoPrestamo.getId());
         }
         return null;
+    }
+    private void validateNonNullFields(LibroDTO libroDTO) {
+        if (libroDTO.getNombre() == null
+                || libroDTO.getAutor() == null
+                || libroDTO.getNumTotal() == null
+                || libroDTO.getNumDisponible() == null
+                || libroDTO.getDisponibilidad() == null
+                || libroDTO.getNumTotal()<libroDTO.getNumDisponible()
+        ) {
+            throw new IllegalArgumentException("Los campos nombre, autor, numTotal, numDisponible y disponibilidad no pueden ser nulos." + "\n" + " El numero disponible debe ser como mucho igual al total.");
+        }
     }
 
 }

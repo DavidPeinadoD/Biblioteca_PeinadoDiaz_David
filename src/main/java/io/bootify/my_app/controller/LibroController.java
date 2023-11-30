@@ -31,7 +31,7 @@ public class LibroController {
     private final ReparadorRepository reparadorRepository;
 
     public LibroController(final LibroService libroService, final LectorRepository lectorRepository,
-            final ReparadorRepository reparadorRepository) {
+                           final ReparadorRepository reparadorRepository) {
         this.libroService = libroService;
         this.lectorRepository = lectorRepository;
         this.reparadorRepository = reparadorRepository;
@@ -40,9 +40,6 @@ public class LibroController {
     @ModelAttribute
     public void prepareContext(final Model model) {
         model.addAttribute("estadoValues", EstadoLibro.values());
-        model.addAttribute("libroValues", lectorRepository.findAll(Sort.by("id"))
-                .stream()
-                .collect(CustomCollectors.toSortedMap(Lector::getId, Lector::getNombre)));
         model.addAttribute("libroReparadorValues", reparadorRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Reparador::getId, Reparador::getId)));
@@ -61,14 +58,20 @@ public class LibroController {
 
     @PostMapping("/add")
     public String add(@ModelAttribute("libro") @Valid final LibroDTO libroDTO,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+                      final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "libro/add";
+        }try {
+            libroService.create(libroDTO);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("libro.create.success"));
+            return "redirect:/libros";
+        } catch (IllegalArgumentException e) {
+            // Handle the case where some mandatory fields are missing
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, e.getMessage());
+            return "redirect:/libros/add";
         }
-        libroService.create(libroDTO);
-        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("libro.create.success"));
-        return "redirect:/libros";
     }
+
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable(name = "id") final Long id, final Model model) {
@@ -78,19 +81,24 @@ public class LibroController {
 
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable(name = "id") final Long id,
-            @ModelAttribute("libro") @Valid final LibroDTO libroDTO,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+                       @ModelAttribute("libro") @Valid final LibroDTO libroDTO,
+                       final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "libro/edit";
+        } try {
+            libroService.update(id, libroDTO);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("libro.update.success"));
+            return "redirect:/libros";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, e.getMessage());
+            return "redirect:/libros/edit/{id}";
         }
-        libroService.update(id, libroDTO);
-        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("libro.update.success"));
-        return "redirect:/libros";
     }
+
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable(name = "id") final Long id,
-            final RedirectAttributes redirectAttributes) {
+                         final RedirectAttributes redirectAttributes) {
         final String referencedWarning = libroService.getReferencedWarning(id);
         if (referencedWarning != null) {
             redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, referencedWarning);

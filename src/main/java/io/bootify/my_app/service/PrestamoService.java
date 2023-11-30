@@ -24,8 +24,8 @@ public class PrestamoService {
     private final BibliotecarioRepository bibliotecarioRepository;
 
     public PrestamoService(final PrestamoRepository prestamoRepository,
-            final LibroRepository libroRepository, final LectorRepository lectorRepository,
-            final BibliotecarioRepository bibliotecarioRepository) {
+                           final LibroRepository libroRepository, final LectorRepository lectorRepository,
+                           final BibliotecarioRepository bibliotecarioRepository) {
         this.prestamoRepository = prestamoRepository;
         this.libroRepository = libroRepository;
         this.lectorRepository = lectorRepository;
@@ -48,6 +48,19 @@ public class PrestamoService {
     public Long create(final PrestamoDTO prestamoDTO) {
         final Prestamo prestamo = new Prestamo();
         mapToEntity(prestamoDTO, prestamo);
+
+        // Check if the book has available copies before creating the loan
+        Libro libro = prestamo.getPrestamo();
+        if (libro == null || libro.getNumDisponible() <= 0) {
+            // Handle the case where the book is not available
+            throw new IllegalStateException("No available copies of the book for loan");
+        }
+
+        // Reduce the number of available copies by 1
+        libro.setNumDisponible(libro.getNumDisponible() - 1);
+
+        // Save the updated book and the loan
+        libroRepository.save(libro);
         return prestamoRepository.save(prestamo).getId();
     }
 
@@ -59,6 +72,19 @@ public class PrestamoService {
     }
 
     public void delete(final Long id) {
+        Prestamo prestamo = prestamoRepository.findById(id)
+                .orElseThrow(NotFoundException::new);
+
+        Libro libro = prestamo.getPrestamo();
+
+        // Fetch the Libro explicitly
+        libro.getNumDisponible(); // This line forces the initialization
+
+        if (libro != null) {
+            libro.setNumDisponible(libro.getNumDisponible() + 1);
+            libroRepository.save(libro);
+        }
+
         prestamoRepository.deleteById(id);
     }
 

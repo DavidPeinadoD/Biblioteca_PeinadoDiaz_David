@@ -52,12 +52,15 @@ public class LectorService {
     }
 
     public Long create(final LectorDTO lectorDTO) {
+        validateNonNullFields(lectorDTO);
+
         final Lector lector = new Lector();
         mapToEntity(lectorDTO, lector);
         return lectorRepository.save(lector).getId();
     }
 
     public void update(final Long id, final LectorDTO lectorDTO) {
+        validateNonNullFields(lectorDTO);
         final Lector lector = lectorRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(lectorDTO, lector);
@@ -103,6 +106,11 @@ public class LectorService {
             return WebUtils.getMessage("lector.bibliotecario.bibliotecario.referenced", bibliotecarioBibliotecario.getId());
         }
         return null;
+    }
+    private void validateNonNullFields(final LectorDTO lectorDTO) {
+        if (lectorDTO.getNombre() == null || lectorDTO.getApellidos()==null){
+            throw new IllegalArgumentException("Los campos nombre y apellidos no pueden estar vacios.");
+        }
     }
 
 }

@@ -47,12 +47,16 @@ public class BibliotecarioService {
     }
 
     public Long create(final BibliotecarioDTO bibliotecarioDTO) {
+        validateNonNullFields(bibliotecarioDTO);
+
         final Bibliotecario bibliotecario = new Bibliotecario();
         mapToEntity(bibliotecarioDTO, bibliotecario);
         return bibliotecarioRepository.save(bibliotecario).getId();
     }
 
     public void update(final Long id, final BibliotecarioDTO bibliotecarioDTO) {
+        validateNonNullFields(bibliotecarioDTO);
+
         final Bibliotecario bibliotecario = bibliotecarioRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(bibliotecarioDTO, bibliotecario);
@@ -96,6 +100,12 @@ public class BibliotecarioService {
             return WebUtils.getMessage("bibliotecario.prestamo.prestamoBibliotecario.referenced", prestamoBibliotecarioPrestamo.getId());
         }
         return null;
+    }
+    private void validateNonNullFields(final BibliotecarioDTO bibliotecarioDTO) {
+        if(bibliotecarioDTO.getNombre() == null
+         || bibliotecarioDTO.getApellidos() == null){
+            throw new IllegalArgumentException("Los campos nombre y apellidos no pueden estar vacios.");
+        }
     }
 
 }

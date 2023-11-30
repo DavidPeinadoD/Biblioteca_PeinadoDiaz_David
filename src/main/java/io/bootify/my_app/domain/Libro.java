@@ -43,22 +43,22 @@ public class Libro {
     )
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String nombre;
 
-    @Column
+    @Column(nullable = false)
     private String autor;
 
     @Column
     private String genero;
 
-    @Column
+    @Column(nullable = false)
     private Long numTotal;
 
-    @Column
+    @Column(nullable = false)
     private Long numDisponible;
 
-    @Column
+    @Column(nullable = false)
     private Boolean disponibilidad;
 
     @Column

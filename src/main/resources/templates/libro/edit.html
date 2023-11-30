@@ -22,7 +22,6 @@
                 <div th:replace="~{fragments/forms::inputRow(object='libro', field='numDisponible', type='number')}" />
                 <div th:replace="~{fragments/forms::inputRow(object='libro', field='disponibilidad', type='checkbox')}" />
                 <div th:replace="~{fragments/forms::inputRow(object='libro', field='estado', type='radio')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='libro', field='libro', type='select')}" />
                 <div th:replace="~{fragments/forms::inputRow(object='libro', field='libroReparador', type='select')}" />
                 <input type="submit" th:value="#{libro.edit.headline}" class="btn btn-primary mt-4" />
             </form>

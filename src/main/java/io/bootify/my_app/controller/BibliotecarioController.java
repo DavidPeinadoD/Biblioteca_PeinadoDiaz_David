@@ -38,10 +38,7 @@ public class BibliotecarioController {
 
     @ModelAttribute
     public void prepareContext(final Model model) {
-        model.addAttribute("bibliotecarioValues", lectorRepository.findAll(Sort.by("id"))
-                .stream()
-                .collect(CustomCollectors.toSortedMap(Lector::getId, Lector::getNombre)));
-        model.addAttribute("usuarioBibliotecarioValues", usuarioRepository.findAll(Sort.by("id"))
+         model.addAttribute("usuarioBibliotecarioValues", usuarioRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Usuario::getId, Usuario::getNombre)));
     }
@@ -63,10 +60,14 @@ public class BibliotecarioController {
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "bibliotecario/add";
+        }try{
+            bibliotecarioService.create(bibliotecarioDTO);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("bibliotecario.create.success"));
+            return "redirect:/bibliotecarios";
+        }catch (IllegalArgumentException e){
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, e.getMessage());
+            return "redirect:/bibliotecarios/add";
         }
-        bibliotecarioService.create(bibliotecarioDTO);
-        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("bibliotecario.create.success"));
-        return "redirect:/bibliotecarios";
     }
 
     @GetMapping("/edit/{id}")
@@ -82,9 +83,14 @@ public class BibliotecarioController {
         if (bindingResult.hasErrors()) {
             return "bibliotecario/edit";
         }
-        bibliotecarioService.update(id, bibliotecarioDTO);
-        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("bibliotecario.update.success"));
-        return "redirect:/bibliotecarios";
+        try {
+            bibliotecarioService.update(id, bibliotecarioDTO);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("lector.update.success"));
+            return "redirect:/bibliotecarios";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, e.getMessage());
+            return "redirect:/bibliotecarios/edit/{id}";
+        }
     }
 
     @PostMapping("/delete/{id}")
